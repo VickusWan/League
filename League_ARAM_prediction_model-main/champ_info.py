@@ -36,9 +36,16 @@ def ClassOfChamp(name):
 
 def get_all_champs():
 
-    champs = {}
+    all_champs = {}
     for i in re.json()['data'].values():
-        champs[i['name']] = i['tags']
-    return champs
+        champ = {}
+        champ['name'] = i['name']
+        champ['key'] = i['key']
+        champ['title'] = i['title']
+        champ['difficulty'] = i['info']['difficulty']
+        champ['image'] = i['image']['full']
+        champ['class'] = i['tags']
+        all_champs[i['name']] = champ
+    return all_champs
 
 
