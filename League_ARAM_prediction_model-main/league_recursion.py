@@ -25,11 +25,8 @@ def matchID_recursion(puuid, count, n):
     if count == n:
         return
     
-    match = league_data.get_matchIDs(puuid, 25) # ['NA1_4743785201']
+    match = league_data.get_matchIDs(puuid, 0, 25) # ['NA1_4743785201']
     match_num = reroll(match)  # finds a random number within that list of match_IDs
-        
-    # while (int(match[match_num][4:]) < 4014332001):
-    #        match_num -= 1
            
     participants = league_data.get_participants(match[match_num]) # ***** this is where it fails
     while not participants:
@@ -63,8 +60,3 @@ if __name__ == "__main__":
     flat_list_participants = flatten(list_participants)
     pd.Series(flat_list_participants).to_csv('puuids.csv', mode='a', index=False, header=False)
     
-    
-    
-# puuids = pd.read_csv('puuids.csv', header=None)
-# puuids.columns = ['puuids']
-# puuids['puuids'].drop_duplicates(inplace=True)

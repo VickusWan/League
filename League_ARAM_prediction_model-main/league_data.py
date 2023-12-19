@@ -58,9 +58,9 @@ def get_puuid(summonerName):
     data = fetch(typename, body)
     return data['puuid']
 
-def get_matchIDs(puuid, num_matches):
+def get_matchIDs(puuid, start, num_matches):
     
-    typename = '/lol/match/v5/matches/by-puuid/{puuid}/ids?count={count}'.format(puuid = puuid, count = num_matches)
+    typename = '/lol/match/v5/matches/by-puuid/{puuid}/ids?start={start}&count={count}'.format(puuid=puuid, start=start, count=num_matches)
     body = 'AMERICAS'
         
     return fetch(typename, body)
