@@ -10,8 +10,8 @@ puuids = df['puuids'].tolist()
 count = 100
 all_matchIds = []
 
-start = 200
-end = 400
+start = 400
+end = 1000
 
 bar = tqdm(total=(end-start), position = 0)
 
