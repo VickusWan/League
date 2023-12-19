@@ -93,8 +93,11 @@ def is_ARAM(matchId):
     typename = '/lol/match/v5/matches/{matchId}'.format(matchId = matchId)
     body = 'AMERICAS'
     data = fetch(typename, body)
-
-    return data['info']['gameMode'] == 'ARAM'
+    
+    if not data:
+        return False
+    else:
+        return data['info']['gameMode'] == 'ARAM'
 
 
 def get_full_matchHistory(my_puuid):
