@@ -1,5 +1,5 @@
 import league_data
-#import pandas as pd
+import pandas as pd
 import csv
 from tqdm import tqdm
 
@@ -11,18 +11,22 @@ puuids = df['puuids'].tolist()
 count = 100
 all_matchIds = []
 
-start = 1000
-end = 1100
+start = 2000
+end = 15000
 
 bar = tqdm(total=(end-start), position = 0)
 
 for i in range(start, end, 1):
     matchIds = league_data.get_matchIDs(puuids[i], 0, count)
-    all_matchIds.extend(matchIds)
+    
+    if not matchIds:
+        continue
+    else:
+        all_matchIds.extend(matchIds)
     bar.update(1)
 
-#pd.Series(all_matchIds).to_csv('matchIDs.csv', mode='a', index=False, header=False)
-with open('matchIDs.csv', 'a', newline='') as csvfile:
-    csv_writer = csv.writer(csvfile)
-    for match in all_matchIds:
-        csv_writer.writerow([match])
+pd.Series(all_matchIds).to_csv('matchIDs.csv', mode='a', index=False, header=False)
+# with open('matchIDs.csv', 'a', newline='') as csvfile:
+#     csv_writer = csv.writer(csvfile)
+#     for match in all_matchIds:
+#         csv_writer.writerow([match])
