@@ -8,15 +8,13 @@ Created on Sun Oct 25 19:13:53 2020
 import json
 import requests
 
-champ = 'http://ddragon.leagueoflegends.com/cdn/13.17.1/data/en_US/champion.json'
+champ = 'https://ddragon.leagueoflegends.com/cdn/13.24.1/data/en_US/champion.json'
 re = requests.get(champ)
 
 def champ_info():
     
-    champ_data = re.json()['data']    
     champs = {}
-    
-    for i in champ_data.values():
+    for i in re.json()['data'].values():
         champs[i['id']] = i['key'], i['tags']
         
     return champs
@@ -36,7 +34,11 @@ def ClassOfChamp(name):
     
     return champ_dic[name][1]
 
+def get_all_champs():
 
-
+    champs = {}
+    for i in re.json()['data'].values():
+        champs[i['name']] = i['tags']
+    return champs
 
 

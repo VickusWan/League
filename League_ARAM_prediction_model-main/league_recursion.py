@@ -14,38 +14,35 @@ def flatten(l):
     
     flat_list = [item for sublist in l for item in sublist]
     
-    return flat_list
+    return flat_list    
+    
+def reroll(n):
+    return math.floor(random.random()*(len(n)-1))
+
 
 def matchID_recursion(puuid, count, n):
     
     if count == n:
         return
     
-    match = league_data.get_matchIDs(puuid,100) # ['NA1_4743785201']
-    match_num = math.floor(random.random()*(len(match)-1))
-    
-    #print('match number is ', match_num)
-    
-    while (int(match[match_num][4:]) < 4014332001):
-           match_num -= 1
-           
+    match = league_data.get_matchIDs(puuid, 25) # ['NA1_4743785201']
+    match_num = reroll(match)  # finds a random number within that list of match_IDs
+        
+    # while (int(match[match_num][4:]) < 4014332001):
+    #        match_num -= 1
            
     participants = league_data.get_participants(match[match_num]) # ***** this is where it fails
-    
-    
-     #'NA1_4014678103',   -> status code 200
-     #'NA1_4013107570',   -> statis code 404
-     
-     # NA1_4014332001 is the LAST game that gives status code 200 (lame)
+    while not participants:
+        match_num -= 1
+        participants = league_data.get_participants(match[match_num])
     
     list_participants.append(participants)
     count += 1
     bar.update(1)
-    partipant_num = math.floor(random.random()*((len(participants)-1)))
-    #print(participants[partipant_num])
+    partipant_num = reroll(participants)
     
     while (participants[partipant_num] == "BOT" or len(participants[partipant_num]) < 5):
-        partipant_num = math.floor(random.random()*((len(participants)-1)))
+        partipant_num = reroll(participants)
         
     matchID_recursion(participants[partipant_num],count, n)
     
@@ -66,3 +63,8 @@ if __name__ == "__main__":
     flat_list_participants = flatten(list_participants)
     pd.Series(flat_list_participants).to_csv('puuids.csv', mode='a', index=False, header=False)
     
+    
+    
+# puuids = pd.read_csv('puuids.csv', header=None)
+# puuids.columns = ['puuids']
+# puuids['puuids'].drop_duplicates(inplace=True)

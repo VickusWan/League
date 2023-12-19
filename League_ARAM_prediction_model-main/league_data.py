@@ -9,6 +9,10 @@ import champ_info
 import requests
 import time
 import pandas as pd
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 payload = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36",
@@ -17,8 +21,7 @@ payload = {
             "Origin": "https://developer.riotgames.com",
             "X-Riot-Token": ""}
 
-API = ['RGAPI-e008f4ad-cc0d-4697-9362-4ff7b4eb3173']
-Vickus1 = 'y5cvkCjUQdFfwAUfBdmMFcoCAYsk96GwenHJGiTUUYrygYejQSLLaP3HkrEJVDK_sP8EOnWtJe8lDg'
+API = os.getenv("API")
     
 def fetch(typename, body):
     
@@ -32,11 +35,13 @@ def fetch(typename, body):
         return 'Not a proper URL'
     
     url = init + typename
-    payload['X-Riot-Token'] = API[0]
+    payload['X-Riot-Token'] = API
     re = requests.get(url,headers = payload)    
-     
-    time.sleep(1)
-    return re.json()
+    if re.status_code == 404:
+        return {}
+    elif re.status_code == 200:
+        time.sleep(1)
+        return re.json()
 
 def get_summonerID(puuid):
     typename = '/riot/account/v1/accounts/by-puuid/{puuid}'.format(puuid = puuid)
@@ -45,40 +50,6 @@ def get_summonerID(puuid):
     
     return r['gameName']
 
-def get_participants(matchId):
-    
-    typename = '/lol/match/v5/matches/{matchId}'.format(matchId = matchId)
-    body = 'AMERICAS'
-    r = fetch(typename, body)
-    
-    try:
-        a = [i['puuid'] for i in r['info']['participants']]
-    except:
-        print(r)
-    
-    return [i['puuid'] for i in r['info']['participants']]
-    
-def get_matchIDs(puuid, num_matches):
-    
-    typename = '/lol/match/v5/matches/by-puuid/{puuid}/ids?count={count}'.format(puuid = puuid, count = num_matches)
-    body = 'AMERICAS'
-        
-    return fetch(typename, body)
-
-def get_match_data(matchId):
-    
-    typename = '/lol/match/v5/matches/{matchId}'.format(matchId = matchId)
-    body = 'AMERICAS'
-        
-    return fetch(typename, body)
-
-def is_ARAM(matchId):
-    typename = '/lol/match/v5/matches/{matchId}'.format(matchId = matchId)
-    body = 'AMERICAS'
-    data = fetch(typename, body)
-
-    return data['info']['gameMode'] == 'ARAM'
-
 def get_puuid(summonerName):
     # Vickus1 puuid = y5cvkCjUQdFfwAUfBdmMFcoCAYsk96GwenHJGiTUUYrygYejQSLLaP3HkrEJVDK_sP8EOnWtJe8lDg
     
@@ -86,6 +57,45 @@ def get_puuid(summonerName):
     body = 'NA1'
     data = fetch(typename, body)
     return data['puuid']
+
+def get_matchIDs(puuid, num_matches):
+    
+    typename = '/lol/match/v5/matches/by-puuid/{puuid}/ids?count={count}'.format(puuid = puuid, count = num_matches)
+    body = 'AMERICAS'
+        
+    return fetch(typename, body)
+
+def get_participants(matchId):
+    
+    typename = '/lol/match/v5/matches/{matchId}'.format(matchId = matchId)
+    body = 'AMERICAS'
+    r = fetch(typename, body)
+    
+    if not r:
+        return []
+    else:
+        return [i['puuid'] for i in r['info']['participants']]
+    
+
+def get_match_data(matchId):
+    #'NA1_4013107570',   -> status code 404
+    #'NA1_4862739484',   -> status code 200
+    typename = '/lol/match/v5/matches/{matchId}'.format(matchId = matchId)
+    body = 'AMERICAS'
+    
+    r = fetch(typename, body)
+    if not r:
+        return []
+    else:
+        return r
+        
+def is_ARAM(matchId):
+    typename = '/lol/match/v5/matches/{matchId}'.format(matchId = matchId)
+    body = 'AMERICAS'
+    data = fetch(typename, body)
+
+    return data['info']['gameMode'] == 'ARAM'
+
 
 def get_full_matchHistory(my_puuid):
     
@@ -100,7 +110,6 @@ def get_full_matchHistory(my_puuid):
         num = 100
     
         while True:
-            
             typename = '/lol/match/v5/matches/by-puuid/{puuid}/ids?start={start}&count={count}'.format(puuid = my_puuid, start = start, count = num)
             data = fetch(typename, body)
             
@@ -108,11 +117,9 @@ def get_full_matchHistory(my_puuid):
                 for i in data:
                 
                     if is_ARAM(i) == True:
-                        match_ids.append(i)
-                    
+                        match_ids.append(i)             
             else:
-                break
-            
+                break          
             start += num
     
     return pd.DataFrame(match_ids)
