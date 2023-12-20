@@ -12,8 +12,8 @@ def get_all_matches():
     count = 100
     all_matchIds = []
 
-    start = 2000
-    end = 15000
+    start = 25000
+    end = 35000
 
     bar = tqdm(total=(end-start), position = 0)
 
@@ -37,8 +37,8 @@ matches = df['matches'].tolist()
 count = 100
 aram_games = []
 
-start = 15000
-end = 20000
+start = 50000
+end = 50550
 
 bar = tqdm(total=(end-start), position = 0)
 
@@ -46,6 +46,7 @@ for i in range(start, end, 1):
     isAram = league_data.is_ARAM(matches[i])
     bar.update(1)
     if isAram:
+        print(True, matches[i])
         aram_games.append(matches[i])
     else:
         continue

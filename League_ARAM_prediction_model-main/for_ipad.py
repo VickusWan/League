@@ -2,10 +2,7 @@ import requests
 import time
 import os
 import csv
-from dotenv import load_dotenv
 from tqdm import tqdm
-
-load_dotenv()
 
 payload = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36",
@@ -14,7 +11,7 @@ payload = {
             "Origin": "https://developer.riotgames.com",
             "X-Riot-Token": ""}
 
-API = "RGAPI-8a24be81-b6c2-413e-8715-050b188d63c1"
+API = "RGAPI-a6182a1a-a6b0-462c-b89f-5d7e051405f3"
     
 def fetch(typename, body):
     
@@ -47,27 +44,21 @@ def is_ARAM(matchId):
         return data['info']['gameMode'] == 'ARAM'
 
 
-start = 20000
-end = 20010
+start = 50000
+end = 50550
 bar = tqdm(total=(end-start), position = 0)
 count = 0
-with open('no_duplicates.csv', newline='') as csvfile:
+with open('no_duplicates.csv', newline='') as csvfile, open('aram_games.csv', 'a', newline='') as aram_file:
     filereader = csv.reader(csvfile, delimiter=' ', quotechar='|')
     
     for _ in range(start - 1):
         next(filereader, None)
-        
+        count += 1
+    
     for row in filereader:
         bar.update(1)
-        
-        if count == (start-end):
-            break
-        count += 1
-        
+        print(is_ARAM(row[0]), row[0])
         if (is_ARAM(row[0])):
-            with open('aram_games.csv', 'a', newline='') as aram_file:
-                csv_writer = csv.writer(aram_file)
-                csv_writer.writerow(row)
-        else:
-            continue
-        
+            
+            csv_writer = csv.writer(aram_file)
+            csv_writer.writerow(row)
