@@ -8,7 +8,7 @@ Created on Mon Oct 26 01:37:02 2020
 import champ_info
 import requests
 import time
-import pandas as pd
+#import pandas as pd
 import os
 from dotenv import load_dotenv
 
@@ -100,195 +100,61 @@ def is_ARAM(matchId):
         return data['info']['gameMode'] == 'ARAM'
 
 
-def get_full_matchHistory(my_puuid):
+# def get_full_matchHistory(my_puuid):
     
+#     body = 'AMERICAS'
+#     match_ids = []
+    
+#     if len(my_puuid) == 0:
+#         return []
+    
+#     else:
+#         start = 0
+#         num = 100
+    
+#         while True:
+#             typename = '/lol/match/v5/matches/by-puuid/{puuid}/ids?start={start}&count={count}'.format(puuid = my_puuid, start = start, count = num)
+#             data = fetch(typename, body)
+            
+#             if len(data) == num:
+#                 for i in data:
+                
+#                     if is_ARAM(i) == True:
+#                         match_ids.append(i)             
+#             else:
+#                 break          
+#             start += num
+    
+#     return pd.DataFrame(match_ids)
+
+def match_info(matchId):
+    
+    typename = '/lol/match/v5/matches/{matchId}'.format(matchId = matchId)
     body = 'AMERICAS'
-    match_ids = []
     
-    if len(my_puuid) == 0:
-        return []
+    r = fetch(typename, body)
+    player_data = r['info']['participants']
     
-    else:
-        start = 0
-        num = 100
+    win, loss = [], []
+    data = {}
     
-        while True:
-            typename = '/lol/match/v5/matches/by-puuid/{puuid}/ids?start={start}&count={count}'.format(puuid = my_puuid, start = start, count = num)
-            data = fetch(typename, body)
-            
-            if len(data) == num:
-                for i in data:
-                
-                    if is_ARAM(i) == True:
-                        match_ids.append(i)             
-            else:
-                break          
-            start += num
-    
-    return pd.DataFrame(match_ids)
-
-def match_info(x):
-    
-    win = []
-    loss = []
-    for i in x['teams']:
-        if i['win'] == 'Win':
-            win.append(i['teamId'])
+    for player in player_data:
+        temp = []
+        if player['win']:
+            temp.append(player['summonerName'])
+            temp.append(player['summonerLevel'])
+            temp.append(player['puuid'])
+            temp.append(player['championName'])
+            temp.append(player['championId'])
+            win.append(temp)
         else:
-            loss.append(i['teamId'])
+            temp.append(player['summonerName'])
+            temp.append(player['summonerLevel'])
+            temp.append(player['puuid'])
+            temp.append(player['championName'])
+            temp.append(player['championId'])
+            loss.append(temp)
     
-    part = x['participants']
-    
-    kills_win = 0
-    deaths_win = 0
-    assists_win = 0
-    dmg_win = 0
-    dmg_taken_win = 0
-    CC_win = 0
-    gold_win = 0
-    firstTurret_win = 0
-    assassin_win = 0
-    fighter_win = 0
-    mage_win = 0
-    marksman_win = 0
-    support_win = 0
-    tank_win = 0
-    
-    kills_loss = 0
-    deaths_loss = 0
-    assists_loss = 0
-    dmg_loss = 0
-    dmg_taken_loss = 0
-    CC_loss = 0
-    gold_loss = 0
-    firstTurret_loss = 0
-    assassin_loss = 0
-    fighter_loss = 0
-    mage_loss = 0
-    marksman_loss = 0
-    support_loss = 0
-    tank_loss = 0
-    
-    
-    for i in part:
-        #name = champ_info.NameOfChamp(i['championId'])
-        cl = champ_info.ClassOfChamp(i['championId'])
-
-        if i['teamId'] == win[0]:
-            
-            kills_win += i['stats']['kills']
-            deaths_win += i['stats']['deaths']
-            assists_win += i['stats']['assists']
-            dmg_win += i['stats']['totalDamageDealt']
-            dmg_taken_win += i['stats']['totalDamageTaken']
-            CC_win += i['stats']['timeCCingOthers']
-            gold_win += i['stats']['goldEarned']
-            if i['stats']['firstTowerKill'] == False:
-                firstTurret_win += 0
-            else:
-                firstTurret_win += 1
-            
-            if cl[0] == 'Assassin':
-                assassin_win += 1
-            elif cl[0] == 'Fighter':
-                fighter_win += 1
-            elif cl[0] == 'Mage':
-                mage_win += 1
-            elif cl[0] == 'Marksman':
-                marksman_win += 1
-            elif cl[0] == 'Support':
-                support_win += 1
-            elif cl[0] == 'Tank':
-                tank_win += 1
-                
-            try:
-                cl[1]
-                if cl[1] == 'Assassin':
-                    assassin_win += 1
-                elif cl[1] == 'Fighter':
-                    fighter_win += 1
-                elif cl[1] == 'Mage':
-                    mage_win += 1
-                elif cl[1] == 'Marksman':
-                    marksman_win += 1
-                elif cl[1] == 'Support':
-                    support_win += 1
-                elif cl[1] == 'Tank':
-                    tank_win += 1
-            except:
-                pass
-     
-        else:
-            kills_loss += i['stats']['kills']
-            deaths_loss += i['stats']['deaths']
-            assists_loss += i['stats']['assists']
-            dmg_loss += i['stats']['totalDamageDealt']
-            dmg_taken_loss += i['stats']['totalDamageTaken']
-            CC_loss += i['stats']['timeCCingOthers']
-            gold_loss += i['stats']['goldEarned']
-            if i['stats']['firstTowerKill'] == False:
-                firstTurret_loss += 0
-            else:
-                firstTurret_loss += 1
-    
-            if cl[0] == 'Assassin':
-                assassin_loss += 1
-            elif cl[0] == 'Fighter':
-                fighter_loss += 1
-            elif cl[0] == 'Mage':
-                mage_loss += 1
-            elif cl[0] == 'Marksman':
-                marksman_loss += 1
-            elif cl[0] == 'Support':
-                support_loss += 1
-            elif cl[0] == 'Tank':
-                tank_loss += 1
-                
-            try:
-                cl[1]
-                if cl[1] == 'Assassin':
-                    assassin_loss += 1
-                elif cl[1] == 'Fighter':
-                    fighter_loss += 1
-                elif cl[1] == 'Mage':
-                    mage_loss += 1
-                elif cl[1] == 'Marksman':
-                    marksman_loss += 1
-                elif cl[1] == 'Support':
-                    support_loss += 1
-                elif cl[1] == 'Tank':
-                    tank_loss += 1
-            except:
-                pass
-            
-    win.append(kills_win)
-    win.append(deaths_win)
-    win.append(assists_win)
-    win.append(dmg_win)
-    win.append(dmg_taken_win)
-    win.append(CC_win)
-    win.append(gold_win)
-    win.append(firstTurret_win)
-    win.append(assassin_win)
-    win.append(fighter_win)
-    win.append(mage_win)
-    win.append(marksman_win)
-    win.append(support_win)
-    win.append(tank_win)
-    
-    loss.append(kills_loss)
-    loss.append(deaths_loss)
-    loss.append(assists_loss)
-    loss.append(dmg_loss)
-    loss.append(dmg_taken_loss)
-    loss.append(CC_loss)
-    loss.append(gold_loss)
-    loss.append(firstTurret_loss)
-    loss.append(assassin_loss)
-    loss.append(fighter_loss)
-    loss.append(mage_loss)
-    loss.append(marksman_loss)
-    loss.append(support_loss)
-    loss.append(tank_loss)
-    
-    return win, loss
+    data['win'] = win
+    data['loss'] = loss
+    return data
