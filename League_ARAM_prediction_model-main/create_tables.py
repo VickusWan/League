@@ -25,8 +25,6 @@ create_table_champ_info = f'''
         class VARCHAR(255)
     );
 '''
-
-
 create_table_poke = f'''
     CREATE TABLE IF NOT EXISTS {'poke'} (
         id SERIAL PRIMARY KEY,
@@ -40,11 +38,45 @@ create_table_poke = f'''
     );
 '''
 
+create_table_aramData = f'''
+    CREATE TABLE IF NOT EXISTS {'aram_data'} (
+        id SERIAL PRIMARY KEY,
+        gameId VARCHAR(255),
+        condition VARCHAR(10),
+        
+        puuid_p1 VARCHAR(255),
+        level_p1 INT,
+        champ_name_p1 VARCHAR(255),
+        champ_id_p1 INT,
+        
+        puuid_p2 VARCHAR(255),
+        level_p2 INT,
+        champ_name_p2 VARCHAR(255),
+        champ_id_p2 INT,
+        
+        puuid_p3 VARCHAR(255),
+        level_p3 INT,
+        champ_name_p3 VARCHAR(255),
+        champ_id_p3 INT,
+        
+        puuid_p4 VARCHAR(255),
+        level_p4 INT,
+        champ_name_p4 VARCHAR(255),
+        champ_id_p4 INT,
+        
+        puuid_p5 VARCHAR(255),
+        level_p5 INT,
+        champ_name_p5 VARCHAR(255),
+        champ_id_p5 INT
+    );
+'''
+
 try:
     with psycopg2.connect(**db_params) as connection:
         with connection.cursor() as cursor:
             cursor.execute(create_table_champ_info)
             cursor.execute(create_table_poke)
+            cursor.execute(create_table_aramData)
 
         connection.commit()
         print("Tables created successfully (if it did not exist).")

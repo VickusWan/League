@@ -99,34 +99,6 @@ def is_ARAM(matchId):
     else:
         return data['info']['gameMode'] == 'ARAM'
 
-
-# def get_full_matchHistory(my_puuid):
-    
-#     body = 'AMERICAS'
-#     match_ids = []
-    
-#     if len(my_puuid) == 0:
-#         return []
-    
-#     else:
-#         start = 0
-#         num = 100
-    
-#         while True:
-#             typename = '/lol/match/v5/matches/by-puuid/{puuid}/ids?start={start}&count={count}'.format(puuid = my_puuid, start = start, count = num)
-#             data = fetch(typename, body)
-            
-#             if len(data) == num:
-#                 for i in data:
-                
-#                     if is_ARAM(i) == True:
-#                         match_ids.append(i)             
-#             else:
-#                 break          
-#             start += num
-    
-#     return pd.DataFrame(match_ids)
-
 def match_info(matchId):
     
     typename = '/lol/match/v5/matches/{matchId}'.format(matchId = matchId)
