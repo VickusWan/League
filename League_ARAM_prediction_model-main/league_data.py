@@ -113,16 +113,14 @@ def match_info(matchId):
     for player in player_data:
         temp = []
         if player['win']:
-            temp.append(player['summonerName'])
-            temp.append(player['summonerLevel'])
             temp.append(player['puuid'])
+            temp.append(player['summonerLevel'])
             temp.append(player['championName'])
             temp.append(player['championId'])
             win.append(temp)
         else:
-            temp.append(player['summonerName'])
-            temp.append(player['summonerLevel'])
             temp.append(player['puuid'])
+            temp.append(player['summonerLevel'])
             temp.append(player['championName'])
             temp.append(player['championId'])
             loss.append(temp)

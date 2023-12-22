@@ -1,4 +1,4 @@
-import league_data
+import league_data, league_recursion
 import pandas as pd
 import csv
 from tqdm import tqdm
@@ -28,26 +28,31 @@ def get_all_matches():
 
     pd.Series(all_matchIds).to_csv('matchIDs.csv', mode='a', index=False, header=False)
 
-
-df = pd.read_csv('matchIDs.csv', header=None)
-df.columns = ['matches']
+#def get_ARAM_only():
+df = pd.read_csv('aram_games.csv', header=None)
+df.columns = ['aram']
 df.drop_duplicates(inplace=True)
-matches = df['matches'].tolist()
+matches = df['aram'].tolist()
 
-count = 100
-aram_games = []
-
-start = 130000
-end = 140000
-
-bar = tqdm(total=(end-start), position = 0)
-
-for i in range(start, end, 1):
-    isAram = league_data.is_ARAM(matches[i])
+currentAramGames = pd.read_csv('aram_only_data.csv')['gameId'].tolist()
+bar = tqdm(total=len(matches), position = 0)
+for gameId in matches:
     bar.update(1)
-    if isAram:
-        #pd.Series([matches[i]]).to_csv('aram_games.csv', mode='a', index=False, header=False)
-        pd.Series([matches[i]]).to_csv('second.csv', mode='a', index=False, header=False)
+    if gameId in currentAramGames:
+        continue
+    else:
+        data = league_data.match_info(gameId)
+        if not data:
+            continue
+        else:
+            win = league_recursion.flatten(data['win'])
+            win.insert(0, 'W')
+            win.insert(0, gameId)
+            loss = league_recursion.flatten(data['loss'])
+            loss.insert(0, 'L')
+            loss.insert(0, gameId)
+
+            pd.DataFrame([win, loss]).to_csv('aram_only_data.csv', mode='a', index=False, header=False)
 
 
 
