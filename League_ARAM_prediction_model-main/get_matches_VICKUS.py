@@ -37,8 +37,8 @@ matches = df['matches'].tolist()
 count = 100
 aram_games = []
 
-start = 130000
-end = 140000
+start = 210000
+end = 220000
 
 bar = tqdm(total=(end-start), position = 0)
 
