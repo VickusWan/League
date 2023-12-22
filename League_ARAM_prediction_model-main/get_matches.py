@@ -37,8 +37,8 @@ matches = df['matches'].tolist()
 count = 100
 aram_games = []
 
-start = 70000
-end = 80550
+start = 100000
+end = 110000
 
 bar = tqdm(total=(end-start), position = 0)
 
@@ -46,7 +46,8 @@ for i in range(start, end, 1):
     isAram = league_data.is_ARAM(matches[i])
     bar.update(1)
     if isAram:
-        pd.Series([matches[i]]).to_csv('aram_games.csv', mode='a', index=False, header=False)
+        #pd.Series([matches[i]]).to_csv('aram_games.csv', mode='a', index=False, header=False)
+        pd.Series([matches[i]]).to_csv('second.csv', mode='a', index=False, header=False)
 
 
 
