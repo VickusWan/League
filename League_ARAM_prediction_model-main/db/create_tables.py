@@ -42,7 +42,7 @@ create_table_aramData = f'''
     CREATE TABLE IF NOT EXISTS {'aram_data'} (
         id SERIAL PRIMARY KEY,
         gameId VARCHAR(255),
-        condition VARCHAR(10),
+        game_result VARCHAR(10),
         
         puuid_p1 VARCHAR(255),
         level_p1 INT,

@@ -1,0 +1,25 @@
+#imageContainer {
+    position: relative;
+}
+
+#imageContainer img {
+    position: absolute;
+    max-width: 200px;
+    max-height: 200px;
+}
+
+#champImage2 {
+    left: 124px;
+}
+
+#champImage3 {
+    left: 249px;
+}
+
+#champImage4 {
+    left: 372px;
+}
+
+#champImage5 {
+    left: 496px;
+}

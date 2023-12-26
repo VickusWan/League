@@ -3,7 +3,7 @@ import os
 import psycopg2
 from urllib.parse import urlparse
 import csv
-import champ_info
+import data_extractors.champ_info as champ_info
 import json
 
 load_dotenv()

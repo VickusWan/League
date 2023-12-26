@@ -23,7 +23,7 @@ payload = {
 
 API = os.getenv("API")
     
-def fetch(typename, body):
+def fetch(typename, body, sleepTime=1):
     
     if body == 'AMERICAS':
         init = "https://americas.api.riotgames.com" 
@@ -40,7 +40,7 @@ def fetch(typename, body):
     if re.status_code == 404:
         return {}
     elif re.status_code == 200:
-        time.sleep(1)
+        time.sleep(sleepTime)
         return re.json()
 
 def get_summonerID(puuid):
@@ -49,6 +49,18 @@ def get_summonerID(puuid):
     r = fetch(typename, body)
     
     return r['gameName']
+
+def get_encryptedId(summonerName):
+    typename = '/lol/summoner/v4/summoners/by-name/{summonerName}'.format(summonerName = summonerName)
+    body = 'NA1'
+    data = fetch(typename, body)
+    return data['id']
+
+def get_player_level(puuid):
+    typename = '/lol/summoner/v4/summoners/by-puuid/{encryptedPUUID}'.format(encryptedPUUID = puuid)
+    body = 'NA1'
+    data = fetch(typename, body)
+    return data['summonerLevel']
 
 def get_puuid(summonerName):
     # Vickus1 puuid = y5cvkCjUQdFfwAUfBdmMFcoCAYsk96GwenHJGiTUUYrygYejQSLLaP3HkrEJVDK_sP8EOnWtJe8lDg
@@ -105,6 +117,8 @@ def match_info(matchId):
     body = 'AMERICAS'
     
     r = fetch(typename, body)
+    if not r:
+        return []
     player_data = r['info']['participants']
     
     win, loss = [], []

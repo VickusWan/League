@@ -3,14 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>ARAM Simulator</title>
 </head>
 <body>
     <h1>Champion Names and Images</h1>
-    <ul>
-        {% for champ in data %}
-            <li>{{ champ.champ_name }} </li>
-        {% endfor %}
-    </ul>
+
+    <form method="post" action="/submit">
+        <select name="dynamicDropdown" id="dynamicDropdown1" onchange="updateImage1()">
+            <option value="" selected disabled>Select an option</option>
+            {% for champ in data %}
+                <option value="{{ champ.image }}">{{ champ.champ_name }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="dynamicDropdown" id="dynamicDropdown2" onchange="updateImage2()">
+            <option value="" selected disabled>Select an option</option>
+            {% for champ in data %}
+                <option value="{{ champ.image }}">{{ champ.champ_name }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="dynamicDropdown" id="dynamicDropdown3" onchange="updateImage3()">
+            <option value="" selected disabled>Select an option</option>
+            {% for champ in data %}
+                <option value="{{ champ.image }}">{{ champ.champ_name }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="dynamicDropdown" id="dynamicDropdown4" onchange="updateImage4()">
+            <option value="" selected disabled>Select an option</option>
+            {% for champ in data %}
+                <option value="{{ champ.image }}">{{ champ.champ_name }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="dynamicDropdown" id="dynamicDropdown5" onchange="updateImage5()">
+            <option value="" selected disabled>Select an option</option>
+            {% for champ in data %}
+                <option value="{{ champ.image }}">{{ champ.champ_name }}</option>
+            {% endfor %}
+        </select>
+        <input type="text" name="summonername" placeholder="Enter player">
+        <input type="submit" value="Submit">
+    </form>
+    <div id="imageContainer" > 
+        <img id="champImage1" src=""/>
+        <img id="champImage2" src=""/>
+        <img id="champImage3" src=""/>
+        <img id="champImage4" src=""/>
+        <img id="champImage5" src=""/>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
 </body>
 </html>

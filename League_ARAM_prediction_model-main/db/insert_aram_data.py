@@ -3,10 +3,8 @@ import os
 import psycopg2
 from urllib.parse import urlparse
 import csv
-import champ_info
 import json
 import pandas as pd
-import data_extractors.league_data as league_data
 from tqdm import tqdm
 
 load_dotenv()
@@ -46,29 +44,27 @@ def return_insert(gameId, data):
             temp_loss.extend(temp)
     return (temp_win, temp_loss)
 
-df = pd.read_csv('/mnt/c/Users/victo/OneDrive/Desktop/League/League_ARAM_prediction_model-main/data_extractors/aram_games.csv', header=None)
+df = pd.read_csv('aram_only_data.csv')
+
 bar = tqdm(total=df.shape[0], position = 0)
 
 with psycopg2.connect(**db_params) as connection:
     with connection.cursor() as cursor:
-        for row in df[0]:
-            aram_data = league_data.match_info(row)
-            for data in return_insert(row, aram_data):            
+        for index, row in df.iterrows():         
 
-                insert_query = f'''INSERT INTO aram_data 
-                (gameid, condition, puuid_p1, level_p1, champ_name_p1, champ_id_p1,
-                puuid_p2, level_p2, champ_name_p2, champ_id_p2,
-                puuid_p3, level_p3, champ_name_p3, champ_id_p3,
-                puuid_p4, level_p4, champ_name_p4, champ_id_p4,
-                puuid_p5, level_p5, champ_name_p5, champ_id_p5) 
-                VALUES ('{data[0]}', '{data[1]}', '{data[2]}', '{data[3]}', '{data[4]}', '{data[5]}', '{data[6]}', '{data[7]}', '{data[8]}',
-                '{data[9]}','{data[10]}','{data[11]}','{data[12]}','{data[13]}','{data[14]}','{data[15]}','{data[16]}','{data[17]}','{data[18]}',
-                '{data[19]}','{data[20]}','{data[21]}');'''
-                cursor.execute(insert_query)
-                bar.update(1)
+            insert_query = f'''INSERT INTO aram_data 
+            (gameid, game_result, puuid_p1, level_p1, champ_name_p1, champ_id_p1,
+            puuid_p2, level_p2, champ_name_p2, champ_id_p2,
+            puuid_p3, level_p3, champ_name_p3, champ_id_p3,
+            puuid_p4, level_p4, champ_name_p4, champ_id_p4,
+            puuid_p5, level_p5, champ_name_p5, champ_id_p5) 
+            VALUES ('{row.iloc[0]}', '{row.iloc[1]}', '{row.iloc[2]}', '{row.iloc[3]}', '{row.iloc[4]}', '{row.iloc[5]}', '{row.iloc[6]}', '{row.iloc[7]}', '{row.iloc[8]}',
+            '{row.iloc[9]}','{row.iloc[10]}','{row.iloc[11]}','{row.iloc[12]}','{row.iloc[13]}','{row.iloc[14]}','{row.iloc[15]}','{row.iloc[16]}','{row.iloc[17]}','{row.iloc[18]}',
+            '{row.iloc[19]}','{row.iloc[20]}','{row.iloc[21]}');'''
+            cursor.execute(insert_query)
+            bar.update(1)
 
     connection.commit()
 print("Values inserted successfully.")
 
-            
-            
+
