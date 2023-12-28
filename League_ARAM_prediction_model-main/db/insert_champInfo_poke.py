@@ -3,8 +3,11 @@ import os
 import psycopg2
 from urllib.parse import urlparse
 import csv
-import data_extractors.champ_info as champ_info
+
 import json
+import sys
+sys.path.append('../data_extractors')
+import champ_info
 
 load_dotenv()
 database_url = os.getenv("DATABASE_URL")

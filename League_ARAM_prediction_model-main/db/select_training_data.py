@@ -21,11 +21,11 @@ def get_training_data():
 
     select_query = f'''
     SELECT game_result,
-    ad.level_p1, ad.champ_name_p1, info1.class, poke1.total, poke1.hard_cc,
-    ad.level_p2, ad.champ_name_p2, info2.class, poke2.total, poke2.hard_cc,
-    ad.level_p3, ad.champ_name_p3, info3.class, poke3.total, poke3.hard_cc,
-    ad.level_p4, ad.champ_name_p4, info4.class, poke4.total, poke4.hard_cc,
-    ad.level_p5, ad.champ_name_p5, info5.class, poke5.total, poke5.hard_cc
+    ad.level_p1, ad.champ_name_p1, info1.class AS class_p1, info1.difficulty as champ_difficulty_p1, poke1.total as total_poke1, poke1.hard_cc as hard_cc_champ1,
+    ad.level_p2, ad.champ_name_p2, info2.class AS class_p2, info2.difficulty as champ_difficulty_p2, poke2.total as total_poke2, poke2.hard_cc as hard_cc_champ2,
+    ad.level_p3, ad.champ_name_p3, info3.class AS class_p3, info3.difficulty as champ_difficulty_p3, poke3.total as total_poke3, poke3.hard_cc as hard_cc_champ3,
+    ad.level_p4, ad.champ_name_p4, info4.class AS class_p4, info4.difficulty as champ_difficulty_p4, poke4.total as total_poke4, poke4.hard_cc as hard_cc_champ4,
+    ad.level_p5, ad.champ_name_p5, info5.class AS class_p5, info5.difficulty as champ_difficulty_p5, poke5.total as total_poke5, poke5.hard_cc as hard_cc_champ5
     FROM aram_data as ad
     LEFT JOIN champinfo as info1 ON ad.champ_id_p1 = info1.champ_key
     LEFT JOIN poke as poke1 ON ad.champ_name_p1 = poke1.champ_name 
