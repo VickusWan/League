@@ -22,7 +22,7 @@ db.init_app(app)
 @app.route('/')
 def index():
     champ_data = champinfo.query.with_entities(champinfo.champ_name, champinfo.image).all()
-    return render_template('index.html', data=champ_data, value = '---')
+    return render_template('index.html', data=champ_data, value = '---', pics=None, champs=None)
 
 @app.route('/submit', methods=['POST'])
 def handle_submit():
@@ -58,7 +58,7 @@ def handle_submit():
     
     win_pct = model.predict_proba(data)
 
-    return render_template('index.html', data=champ_data, value = str(round(win_pct[0][1], 3)))
+    return render_template('index.html', data=champ_data, value = str(round(win_pct[0][1], 3)), pics=png_files, champs=final_values)
 
 if __name__ == "__main__":
     app.run(debug=True)
